@@ -1,0 +1,16 @@
+# grid variables
+GRID_SIZE_DEFAULT = 20
+AXES_WIDTH = 3
+GRID_WIDTH = 1
+
+# color variables
+BACKGROUND_COLOR = (255, 255, 255)
+GRID_COLOR = (100, 100, 100)
+AXES_COLOR = (0, 0, 0)
+
+# screen dimensions and origin location
+SCREEN_DIMS = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 800
+ORIGIN = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+# fps
+FPS_LIMIT = 24

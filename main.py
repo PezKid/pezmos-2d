@@ -1,92 +1,47 @@
 import pygame
-import math
-import numpy as np
+from config import *
+from coords import *
+from grid import draw_axes, draw_grid
+from input import mouse_click
 
-# colors
-BACKGROUND_COLOR = (255, 255, 255)
-GRID_COLOR = (100, 100, 100)
-AXES_COLOR = (0, 0, 0)
-
-SCREEN_DIMS = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 800
-GRID_SIZE = 20
-AXES_WIDTH = 3
-GRID_WIDTH = 1
-ORIGIN = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
+# setup pygame
 screen = pygame.display.set_mode(SCREEN_DIMS)
 pygame.display.set_caption("Pezmos")
 clock = pygame.time.Clock()
 
-def draw_axes(origin, color, width):
-  # get origin values
-  Ox, Oy = origin
-  
-  # horizontal
-  pygame.draw.line(screen, color, origin, (SCREEN_WIDTH, Oy), width=width)
-  pygame.draw.line(screen, color, origin, (0, Oy), width=width)
-  
-  # vertical
-  pygame.draw.line(screen, color, origin, (Ox, SCREEN_HEIGHT), width=width)
-  pygame.draw.line(screen, color, origin, (Ox, 0), width=width)
-  
-def draw_grid(origin, color, grid_size, width):
-  # get origin values
-  Ox, Oy = origin
-  
-  # horizontal
-  for yadj in np.arange(0, SCREEN_HEIGHT - Oy, grid_size):
-    posy, negy = Oy + yadj, Ox - yadj
-    pygame.draw.line(screen, color, (0, posy), (SCREEN_WIDTH, posy), width=width)
-    pygame.draw.line(screen, color, (0, negy), (SCREEN_WIDTH, negy), width=width)
-  
-  # vertical Q1, Q2
-  for xadj in np.arange(0, SCREEN_WIDTH - Ox, grid_size):
-    posx, negx = Ox + xadj, Ox - xadj
-    pygame.draw.line(screen, color, (posx, 0), (posx, SCREEN_WIDTH), width=width)
-    pygame.draw.line(screen, color, (negx, 0), (negx, SCREEN_WIDTH), width=width)
-  
-# convert global coords to grid coords
-def gl2gr(coords):
-  x_coord, y_coord = coords
-  Ox, Oy = ORIGIN
-  new_x = ((x_coord - Ox) / GRID_SIZE)
-  new_y = -((y_coord - Oy) / GRID_SIZE)
-  return (new_x, new_y)
-  
-# convert grid coords to global coords
-def gr2gl(coords):
-  x_coord, y_coord = coords
-  Ox, Oy = ORIGIN
-  new_x = GRID_SIZE * x_coord + Ox
-  new_y = -(GRID_SIZE * y_coord) + Oy
-  return (new_x, new_y)
-
-def mouse_click(event):
-  mouse_x, mouse_y = global_to_grid_coords(event.pos)
-  print(f"({mouse_x}, {mouse_y}) click detected")
-
-fps_limit = 24
+# initialize variables
+grid_size = GRID_SIZE_DEFAULT
 running = True
+
+# main game loop
 while (running):
   
-  clock.tick(fps_limit)
+  # set framerate
+  clock.tick(FPS_LIMIT)
   
+  # handles input that scales the grid size, up arrow to zoom in, down arrow to zoom out
   key = pygame.key.get_pressed()
   if (key[pygame.K_UP]):
-    GRID_SIZE = GRID_SIZE + 1
+    grid_size = grid_size + 1
   elif (key[pygame.K_DOWN]):
-    GRID_SIZE = GRID_SIZE - 1
+    grid_size = grid_size - 1
   
+  # draw background and grid
   screen.fill(BACKGROUND_COLOR)
-  draw_grid(ORIGIN, GRID_COLOR, GRID_SIZE, GRID_WIDTH)
-  draw_axes(ORIGIN, AXES_COLOR, AXES_WIDTH)
+  draw_grid(screen, ORIGIN, GRID_COLOR, grid_size, GRID_WIDTH)
+  draw_axes(screen, ORIGIN, AXES_COLOR, AXES_WIDTH)
   
+  # event loop
   for event in pygame.event.get():
-    if (event.type == pygame.QUIT):
+    # quits game
+    if (event.type == pygame.QUIT): 
       running = False
+    # prints grid coordinate on click, used to debug coordinate system
     elif (event.type == pygame.MOUSEBUTTONDOWN):
-      mouse_click(event)
+      mouse_click(event, grid_size)
   
+  # update screen
   pygame.display.flip()
 
+# end application
 pygame.quit()
