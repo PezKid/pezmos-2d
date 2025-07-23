@@ -4,9 +4,12 @@ AXES_WIDTH = 3
 GRID_WIDTH = 1
 
 # color variables
-BACKGROUND_COLOR = (255, 255, 255)
+BACKGROUND_COLOR = (200, 200, 200)
 GRID_COLOR = (100, 100, 100)
 AXES_COLOR = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 # screen dimensions and origin location
 SCREEN_DIMS = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 800
